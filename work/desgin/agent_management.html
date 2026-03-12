@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能体管理模块原型</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e5cf6;
+            --primary-soft: #ecf2ff;
+            --success: #67c23a;
+            --success-soft: #f0f9eb;
+            --warning: #e6a23c;
+            --warning-soft: #fdf6ec;
+            --danger: #f56c6c;
+            --danger-soft: #fef0f0;
+            --info: #909399;
+            --info-soft: #f4f4f5;
+            --text-main: #303133;
+            --text-regular: #606266;
+            --text-secondary: #909399;
+            --border: #e4e7ed;
+            --border-light: #ebeef5;
+            --main-bg: #f8f8f8;
+            --surface: #ffffff;
+            --menu-text: #505968;
+            --menu-active-bg: #f2f3f5;
+            --page-bg: linear-gradient(180deg, #f3f6fb 0%, #eef2f8 100%);
+            --shadow: 0 18px 42px rgba(22, 36, 79, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { min-height: 100%; }
+        body {
+            font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+            background: var(--page-bg);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+        .prototype-page {
+            width: min(1640px, calc(100vw - 48px));
+            margin: 0 auto;
+            padding: 28px 0 48px;
+        }
+        .intro-card, .app-shell {
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(228, 231, 237, 0.9);
+            box-shadow: var(--shadow);
+        }
+        .intro-card {
+            border-radius: 20px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+        }
+        .intro-card h1 { font-size: 30px; font-weight: 700; margin-bottom: 10px; }
+        .intro-card p { color: var(--text-regular); font-size: 14px; max-width: 1120px; }
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 16px;
+            margin-top: 18px;
+        }
+        .intro-panel, .panel, .drawer-section, .summary-box, .tree-panel, .list-panel, .stat-card {
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+        }
+        .intro-panel { padding: 16px 18px; }
+        .intro-panel h2 { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+        .intro-list, .chip-list, .button-group, .tool-icons, .tag-stack, .actions-inline, .permission-pills, .filter-chips, .small-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .intro-item, .feature-chip, .switch-chip, .filter-chip, .tag, .permission-pill, .status-tag, .board-badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 28px;
+            padding: 0 10px;
+            border-radius: 999px;
+            font-size: 12px;
+        }
+        .intro-item, .feature-chip, .switch-chip, .filter-chip {
+            border: 1px solid var(--border-light);
+            background: #fff;
+            color: var(--text-regular);
+        }
+        .feature-chip strong { color: var(--primary); margin-right: 6px; }
+        .prototype-board { margin-bottom: 30px; }
+        .board-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 24px;
+            margin-bottom: 12px;
+            padding: 0 6px;
+        }
+        .board-meta h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .board-meta p { color: var(--text-regular); font-size: 13px; }
+        .board-badge {
+            border: 1px solid rgba(46, 92, 246, 0.18);
+            background: rgba(46, 92, 246, 0.08);
+            color: var(--primary);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .app-shell { border-radius: 18px; overflow: hidden; }
+        .shell-body { display: flex; min-height: 960px; }
+        .shell-short { min-height: 900px; }
+        .shell-aside {
+            width: 220px;
+            border-right: 1px solid var(--border-light);
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+        .brand { padding: 18px; border-bottom: 1px solid var(--border-light); }
+        .brand-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .logo-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #2e5cf6 0%, #5f82ff 100%);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .brand p { color: var(--text-secondary); font-size: 12px; margin-top: 8px; }
+        .menu-scroll { padding: 10px 8px 18px; flex: 1; }
+        .menu-group-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #a0a8b8;
+            letter-spacing: 0.06em;
+            padding: 14px 12px 8px;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            color: var(--menu-text);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .menu-item.sub { margin-left: 18px; font-size: 13px; }
+        .menu-item.active { background: var(--menu-active-bg); color: var(--primary); font-weight: 700; }
+        .menu-icon { width: 18px; text-align: center; color: #9097a8; font-size: 13px; }
+        .shell-main {
+            min-width: 0;
+            flex: 1;
+            background: var(--main-bg);
+            display: flex;
+            flex-direction: column;
+        }
+        .topbar, .tags-bar, .panel-head, .page-head, .drawer-head-top, .query-row-bottom, .pagination, .hero-card, .tree-node {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .topbar {
+            height: 50px;
+            padding: 0 18px;
+            background: #fff;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .topbar-left, .topbar-right, .breadcrumb, .user-chip, .tag-tab, .btn, .avatar, .icon-button { display: inline-flex; align-items: center; gap: 8px; }
+        .breadcrumb { color: var(--text-secondary); font-size: 13px; }
+        .breadcrumb strong { color: var(--text-main); font-weight: 600; }
+        .icon-button, .hamburger {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            justify-content: center;
+        }
+        .tags-bar {
+            height: 42px;
+            padding: 0 14px;
+            background: #fff;
+            border-bottom: 1px solid var(--border-light);
+            justify-content: flex-start;
+        }
+        .tag-tab {
+            min-width: 92px;
+            height: 30px;
+            padding: 0 12px;
+            border-radius: 4px;
+            border: 1px solid var(--border-light);
+            background: #fff;
+            color: var(--text-regular);
+            font-size: 12px;
+        }
+        .tag-tab.active {
+            background: var(--primary-soft);
+            border-color: rgba(46, 92, 246, 0.28);
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .user-chip {
+            padding: 4px 6px 4px 4px;
+            border-radius: 999px;
+            border: 1px solid var(--border-light);
+            background: #fff;
+            color: var(--text-regular);
+            font-size: 13px;
+        }
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4068ff 0%, #6d8cff 100%);
+            color: #fff;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .workspace { flex: 1; padding: 10px; display: flex; }
+        .content-wrap {
+            width: 100%;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-head { align-items: flex-start; margin-bottom: 14px; }
+        .page-head h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .page-head p, .panel-head p, .footer-note, .table-note, .timeline-item p, .drawer-head p { color: var(--text-secondary); font-size: 12px; }
+        .panel { margin-bottom: 14px; overflow: hidden; }
+        .panel-head, .drawer-section-head {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-light);
+            background: linear-gradient(180deg, #fff 0%, #fcfdff 100%);
+        }
+        .panel-head { align-items: flex-start; }
+        .panel-head h4, .drawer-section-head strong { font-size: 14px; font-weight: 700; }
+        .panel-body, .drawer-section-body { padding: 14px; }
+        .btn {
+            min-height: 32px;
+            padding: 0 14px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text-regular);
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+        .btn.plain { color: var(--primary); border-color: rgba(46, 92, 246, 0.3); background: rgba(46, 92, 246, 0.05); }
+        .btn.danger { color: var(--danger); border-color: rgba(245, 108, 108, 0.3); background: rgba(245, 108, 108, 0.06); }
+        .stats-grid, .query-grid, .form-grid, .detail-grid, .split-layout, .intro-grid, .acl-summary, .desc-grid {
+            display: grid;
+            gap: 12px;
+        }
+        .stats-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 14px; }
+        .stat-card { padding: 16px; background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%); }
+        .stat-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; }
+        .stat-main { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+        .stat-main strong { font-size: 28px; line-height: 1; font-weight: 700; }
+        .stat-trend { font-size: 12px; color: var(--success); font-weight: 600; }
+        .query-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+        .compact { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .detail-grid { grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.85fr); }
+        .split-layout { grid-template-columns: 340px minmax(0, 1fr); }
+        .acl-summary, .desc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field.span-2 { grid-column: span 2; }
+        .field label, .desc-item label, .summary-box label { font-size: 12px; color: var(--text-regular); font-weight: 600; }
+        .input, .select, .textarea, .code-block, .tip-card, .inline-notice {
+            width: 100%;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .input, .select {
+            height: 34px;
+            padding: 0 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            background: #fff;
+        }
+        .textarea, .code-block {
+            min-height: 110px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            background: #fcfdff;
+            font-family: "Consolas", "Courier New", monospace;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            color: #44516b;
+        }
+        .inline-notice, .tip-card {
+            padding: 10px 12px;
+            border-radius: 10px;
+        }
+        .inline-notice {
+            border: 1px dashed rgba(46, 92, 246, 0.32);
+            background: rgba(46, 92, 246, 0.06);
+            color: var(--text-regular);
+            margin-bottom: 12px;
+        }
+        .tip-card {
+            border: 1px dashed rgba(230, 162, 60, 0.45);
+            background: rgba(230, 162, 60, 0.08);
+            color: #8a6624;
+        }
+        .table-wrapper {
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        thead { background: #fafafa; }
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border-light);
+            text-align: left;
+            font-size: 12px;
+            color: var(--text-regular);
+            vertical-align: top;
+        }
+        th { color: var(--text-main); font-weight: 700; }
+        tbody tr:last-child td { border-bottom: none; }
+        .checkbox-cell { width: 34px; }
+        .checkbox-box {
+            width: 14px;
+            height: 14px;
+            border: 1px solid #c8ccd5;
+            border-radius: 2px;
+            background: #fff;
+            display: inline-block;
+        }
+        .table-title { display: flex; flex-direction: column; gap: 4px; }
+        .table-title strong { color: var(--primary); font-size: 13px; font-weight: 700; }
+        .sub-line { color: var(--text-secondary); font-size: 12px; }
+        .tag.blue, .permission-pill.blue { color: var(--primary); background: rgba(46, 92, 246, 0.1); }
+        .tag.green, .permission-pill.green { color: var(--success); background: rgba(103, 194, 58, 0.12); }
+        .tag.orange, .permission-pill.orange { color: var(--warning); background: rgba(230, 162, 60, 0.16); }
+        .tag.red, .permission-pill.red { color: var(--danger); background: rgba(245, 108, 108, 0.14); }
+        .tag.gray, .permission-pill.gray { color: var(--info); background: rgba(144, 147, 153, 0.12); }
+        .status-tag { font-weight: 700; }
+        .status-tag.published { color: var(--success); background: var(--success-soft); }
+        .status-tag.draft { color: var(--warning); background: var(--warning-soft); }
+        .status-tag.offline { color: var(--info); background: var(--info-soft); }
+        .status-tag.unhealthy { color: var(--danger); background: var(--danger-soft); }
+        .status-tag.private { color: #7a59d1; background: rgba(122, 89, 209, 0.12); }
+        .status-tag.dept { color: #0f8a6c; background: rgba(15, 138, 108, 0.14); }
+        .action-link { color: var(--primary); font-weight: 600; }
+        .action-link.warn { color: var(--warning); }
+        .action-link.danger { color: var(--danger); }
+        .pagination { margin-top: 12px; color: var(--text-secondary); font-size: 12px; }
+        .pager { display: flex; align-items: center; gap: 6px; }
+        .pager span {
+            min-width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            border: 1px solid var(--border-light);
+            background: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-regular);
+        }
+        .pager span.active { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 700; }
+        .overlay-surface {
+            position: relative;
+            min-height: 830px;
+            background: linear-gradient(180deg, #fbfcff 0%, #f7f8fb 100%);
+        }
+        .ghost-layout { opacity: 0.38; }
+        .ghost-box {
+            border: 1px solid var(--border-light);
+            background: #fff;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+        .ghost-toolbar { height: 58px; }
+        .ghost-query { height: 130px; }
+        .ghost-table { height: 420px; }
+        .page-mask {
+            position: absolute;
+            inset: 0;
+            background: rgba(13, 24, 46, 0.22);
+        }
+        .drawer {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            bottom: 14px;
+            width: 560px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 16px 36px rgba(12, 20, 39, 0.18);
+            display: flex;
+            flex-direction: column;
+            z-index: 2;
+            overflow: hidden;
+        }
+        .drawer.wide { width: 620px; }
+        .drawer-head {
+            padding: 18px 20px 14px;
+            border-bottom: 1px solid var(--border-light);
+            background: linear-gradient(180deg, #fff 0%, #fcfdff 100%);
+        }
+        .drawer-body {
+            padding: 16px 18px;
+            overflow: hidden;
+            flex: 1;
+            background: #fcfdff;
+        }
+        .drawer-scroll {
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .drawer-footer {
+            padding: 14px 18px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            background: #fff;
+        }
+        .hero-card {
+            align-items: flex-start;
+            border: 1px solid rgba(46, 92, 246, 0.14);
+            background: linear-gradient(135deg, rgba(46, 92, 246, 0.08) 0%, rgba(46, 92, 246, 0.02) 100%);
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+        }
+        .hero-title { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+        .hero-title h4 { font-size: 22px; font-weight: 700; }
+        .hero-meta { display: flex; flex-wrap: wrap; gap: 16px; color: var(--text-secondary); font-size: 12px; }
+        .desc-item { border-bottom: 1px dashed #edf0f5; padding-bottom: 10px; }
+        .desc-item strong, .summary-box strong { font-size: 13px; color: var(--text-main); }
+        .timeline { display: flex; flex-direction: column; gap: 12px; }
+        .timeline-item { display: grid; grid-template-columns: 18px 1fr; gap: 12px; }
+        .timeline-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary);
+            margin-top: 6px;
+            box-shadow: 0 0 0 4px rgba(46, 92, 246, 0.12);
+        }
+        .timeline-item strong { display: inline-block; margin-bottom: 4px; font-size: 13px; }
+        .summary-box { padding: 12px 14px; }
+        .filter-chip.selected, .switch-chip.active {
+            color: var(--primary);
+            border-color: rgba(46, 92, 246, 0.24);
+            background: rgba(46, 92, 246, 0.08);
+            font-weight: 700;
+        }
+        .tree-panel, .list-panel { overflow: hidden; }
+        .tree-list { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+        .tree-node {
+            padding: 10px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            background: #fff;
+        }
+        .tree-node strong { font-size: 13px; }
+        .tree-node p { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+        .level-2 { margin-left: 18px; background: #fcfdff; }
+        .count-badge {
+            min-width: 26px;
+            height: 22px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: rgba(46, 92, 246, 0.1);
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .color-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        .footer-note { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="prototype-page">
+        <section class="intro-card">
+            <h1>智能体管理模块前端原型</h1>
+            <p>参考接口文档里的主体、生命周期、ACL、分类和标签管理要求，并沿用当前系统管理模块的后台视觉语言，整理为一套适合直接进入 Figma 的高保真原型草稿。</p>
+            <div class="intro-grid">
+                <div class="intro-panel">
+                    <h2>本次补齐的核心场景</h2>
+                    <div class="intro-list">
+                        <span class="intro-item">01 列表检索与运营总览</span>
+                        <span class="intro-item">02 新建 / 编辑智能体抽屉</span>
+                        <span class="intro-item">03 详情页与发布历史</span>
+                        <span class="intro-item">04 ACL 授权抽屉</span>
+                        <span class="intro-item">05 分类 / 标签管理页</span>
+                    </div>
+                </div>
+                <div class="intro-panel">
+                    <h2>接口文档映射</h2>
+                    <div class="chip-list">
+                        <span class="feature-chip"><strong>主体</strong>Agent CRUD</span>
+                        <span class="feature-chip"><strong>生命周期</strong>Publish / Offline / Release</span>
+                        <span class="feature-chip"><strong>权限</strong>ACL 授权回收</span>
+                        <span class="feature-chip"><strong>资产</strong>分类树 / 标签页</span>
+                        <span class="feature-chip"><strong>端点</strong>Health / Auth / Mapping</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="prototype-board">
+            <div class="board-meta">
+                <div>
+                    <h2>01 智能体列表页</h2>
+                    <p>入口页对应 `/console/agents/page`，突出运营视图、查询条件、对象状态和常用动作。</p>
+                </div>
+                <div class="board-badge">系统管理风格 / 白底菜单 / 标签页导航</div>
+            </div>
+            <div class="app-shell">
+                <div class="shell-body">
+                    <aside class="shell-aside">
+                        <div class="brand">
+                            <div class="brand-logo"><span class="logo-dot">AI</span><span>PIG ADMIN</span></div>
+                            <p>智能体管理模块原型</p>
+                        </div>
+                        <div class="menu-scroll">
+                            <div class="menu-group-title">主导航</div>
+                            <div class="menu-item"><span class="menu-icon">□</span><span>首页</span></div>
+                            <div class="menu-item"><span class="menu-icon">□</span><span>权限管理</span></div>
+                            <div class="menu-item"><span class="menu-icon">□</span><span>系统管理</span></div>
+                            <div class="menu-item sub"><span class="menu-icon">·</span><span>用户管理</span></div>
+                            <div class="menu-item sub"><span class="menu-icon">·</span><span>菜单管理</span></div>
+                            <div class="menu-item sub"><span class="menu-icon">·</span><span>角色管理</span></div>
+                            <div class="menu-item sub"><span class="menu-icon">·</span><span>参数管理</span></div>
+                            <div class="menu-item sub active"><span class="menu-icon">·</span><span>智能体管理</span></div>
+                            <div class="menu-item"><span class="menu-icon">□</span><span>系统监控</span></div>
+                            <div class="menu-item"><span class="menu-icon">□</span><span>开发平台</span></div>
+                            <div class="menu-group-title">模块内导航</div>
+                            <div class="menu-item sub active"><span class="menu-icon">·</span><span>智能体列表</span></div>
+                            <div class="menu-item sub"><span class="menu-icon">·</span><span>分类标签</span></div>
+                            <div class="menu-item sub"><span class="menu-icon">·</span><span>健康巡检</span></div>
+                        </div>
+                    </aside>
+                    <main class="shell-main">
+                        <div class="topbar">
+                            <div class="topbar-left">
+                                <span class="hamburger">≡</span>
+                                <div class="breadcrumb"><span>首页</span><span>/</span><span>系统管理</span><span>/</span><strong>智能体管理</strong></div>
+                            </div>
+                            <div class="topbar-right">
+                                <span class="icon-button">搜</span>
+                                <span class="icon-button">铃</span>
+                                <span class="icon-button">配</span>
+                                <span class="user-chip"><span class="avatar">A</span><span>admin</span></span>
+                            </div>
+                        </div>
+                        <div class="tags-bar">
+                            <span class="tag-tab">首页</span>
+                            <span class="tag-tab">用户管理</span>
+                            <span class="tag-tab">角色管理</span>
+                            <span class="tag-tab active">智能体管理</span>
+                            <span class="tag-tab">数据源管理</span>
+                        </div>
+                        <div class="workspace">
+                            <div class="content-wrap">
+                                <div class="page-head">
+                                    <div>
+                                        <h3>智能体管理</h3>
+                                        <p>统一管理智能体主体、默认端点、可见范围、发布状态和对象级权限。</p>
+                                    </div>
+                                    <div class="button-group">
+                                        <span class="btn primary">新增智能体</span>
+                                        <span class="btn">导出</span>
+                                        <span class="btn">分类管理</span>
+                                        <span class="btn">标签管理</span>
+                                    </div>
+                                </div>
+                                <div class="stats-grid">
+                                    <div class="stat-card"><div class="stat-label">智能体总数</div><div class="stat-main"><strong>128</strong><span class="stat-trend">较上周 +12%</span></div></div>
+                                    <div class="stat-card"><div class="stat-label">已发布</div><div class="stat-main"><strong>74</strong><span class="stat-trend">运行中占比 57.8%</span></div></div>
+                                    <div class="stat-card"><div class="stat-label">草稿 / 待发布</div><div class="stat-main"><strong>31</strong><span class="stat-trend">待评审 9 个</span></div></div>
+                                    <div class="stat-card"><div class="stat-label">异常端点</div><div class="stat-main"><strong>4</strong><span class="stat-trend" style="color: var(--danger);">需要巡检</span></div></div>
+                                </div>
+                                <div class="panel">
+                                    <div class="panel-head">
+                                        <div><h4>查询条件</h4><p>支持按名称/编码、状态、框架、分类、标签和授权范围筛选。</p></div>
+                                        <div class="tool-icons"><span class="icon-button">列</span><span class="icon-button">刷</span><span class="icon-button">导</span></div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="query-grid">
+                                            <div class="field"><label>名称 / 编码</label><div class="input">请输入智能体名称、Code 或 AgentId</div></div>
+                                            <div class="field"><label>状态</label><div class="select">全部 / DRAFT / PUBLISHED / OFFLINE</div></div>
+                                            <div class="field"><label>框架类型</label><div class="select">全部 / LANGCHAIN / DIFY / SPRING_AI</div></div>
+                                            <div class="field"><label>分类</label><div class="select">全部 / 客服 / 运营 / 开发效能</div></div>
+                                            <div class="field"><label>标签</label><div class="select">全部 / RAG / FAQ / 工作流</div></div>
+                                        </div>
+                                        <div class="query-row-bottom">
+                                            <div class="button-group">
+                                                <span class="switch-chip active">仅看我创建</span>
+                                                <span class="switch-chip">仅看我已授权</span>
+                                                <span class="switch-chip">展示异常端点</span>
+                                                <span class="switch-chip">按最近发布排序</span>
+                                            </div>
+                                            <div class="button-group"><span class="btn primary">查询</span><span class="btn">重置</span><span class="btn">保存视图</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel">
+                                    <div class="panel-head">
+                                        <div><h4>智能体列表</h4><p>默认展示当前用户有权查看的智能体及其健康状态、发布信息和更新时间。</p></div>
+                                        <div class="button-group"><span class="btn plain">批量下线</span><span class="btn">健康检查</span><span class="btn danger">删除</span></div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="table-wrapper">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th class="checkbox-cell"><span class="checkbox-box"></span></th>
+                                                        <th style="width: 70px;">ID</th>
+                                                        <th style="width: 220px;">智能体信息</th>
+                                                        <th style="width: 170px;">分类 / 标签</th>
+                                                        <th style="width: 120px;">框架</th>
+                                                        <th style="width: 110px;">状态</th>
+                                                        <th style="width: 110px;">可见范围</th>
+                                                        <th style="width: 110px;">健康状态</th>
+                                                        <th style="width: 170px;">发布信息</th>
+                                                        <th style="width: 140px;">更新时间</th>
+                                                        <th>操作</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><span class="checkbox-box"></span></td><td>30001</td>
+                                                        <td><div class="table-title"><strong>客服知识问答助手</strong><span class="sub-line">customer_service_bot</span></div></td>
+                                                        <td><div class="tag-stack"><span class="tag blue">客服</span><span class="tag green">知识库</span><span class="tag gray">FAQ</span></div></td>
+                                                        <td>LANGCHAIN</td><td><span class="status-tag published">已发布</span></td><td><span class="status-tag dept">部门可见</span></td><td><span class="status-tag published">HEALTHY</span></td>
+                                                        <td><div class="table-title"><strong>R2026.03.11</strong><span class="sub-line">prod-default / 14:20</span></div></td><td>2026-03-11 14:21</td>
+                                                        <td><div class="actions-inline"><span class="action-link">详情</span><span class="action-link">编辑</span><span class="action-link">授权</span></div></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span class="checkbox-box"></span></td><td>30014</td>
+                                                        <td><div class="table-title"><strong>市场分析日报机器人</strong><span class="sub-line">marketing_report_dify</span></div></td>
+                                                        <td><div class="tag-stack"><span class="tag blue">运营</span><span class="tag orange">工作流</span><span class="tag gray">日报</span></div></td>
+                                                        <td>DIFY</td><td><span class="status-tag draft">草稿</span></td><td><span class="status-tag private">仅私有</span></td><td><span class="status-tag offline">未巡检</span></td>
+                                                        <td><div class="table-title"><strong>未发布</strong><span class="sub-line">待配置默认端点</span></div></td><td>2026-03-11 10:05</td>
+                                                        <td><div class="actions-inline"><span class="action-link">详情</span><span class="action-link">编辑</span><span class="action-link warn">发布</span></div></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span class="checkbox-box"></span></td><td>30032</td>
+                                                        <td><div class="table-title"><strong>代码评审辅助助手</strong><span class="sub-line">code_review_copilot</span></div></td>
+                                                        <td><div class="tag-stack"><span class="tag blue">研发效能</span><span class="tag green">代码</span><span class="tag gray">审查</span></div></td>
+                                                        <td>SPRING_AI</td><td><span class="status-tag published">已发布</span></td><td><span class="status-tag dept">部门可见</span></td><td><span class="status-tag unhealthy">DEGRADED</span></td>
+                                                        <td><div class="table-title"><strong>R2026.03.09</strong><span class="sub-line">review-prod / 09:38</span></div></td><td>2026-03-10 23:16</td>
+                                                        <td><div class="actions-inline"><span class="action-link">详情</span><span class="action-link">授权</span><span class="action-link warn">巡检</span></div></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span class="checkbox-box"></span></td><td>30047</td>
+                                                        <td><div class="table-title"><strong>发票识别与归档助手</strong><span class="sub-line">invoice_ocr_agent</span></div></td>
+                                                        <td><div class="tag-stack"><span class="tag blue">财务</span><span class="tag green">OCR</span><span class="tag gray">票据</span></div></td>
+                                                        <td>LANGCHAIN</td><td><span class="status-tag offline">已下线</span></td><td><span class="status-tag dept">部门可见</span></td><td><span class="status-tag offline">OFFLINE</span></td>
+                                                        <td><div class="table-title"><strong>R2026.02.26</strong><span class="sub-line">已于 03-08 下线</span></div></td><td>2026-03-08 18:11</td>
+                                                        <td><div class="actions-inline"><span class="action-link">详情</span><span class="action-link warn">重新发布</span><span class="action-link danger">删除</span></div></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="pagination"><span>共 128 条，当前第 1 / 13 页</span><div class="pager"><span>&lt;</span><span class="active">1</span><span>2</span><span>3</span><span>...</span><span>13</span><span>&gt;</span></div></div>
+                                    </div>
+                                </div>
+                                <div class="footer-note">页面说明：列表默认遵循对象级权限过滤，开发者仅能看到本人创建或 ACL 已授权的数据。</div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </section>
+
+        <section class="prototype-board">
+            <div class="board-meta">
+                <div>
+                    <h2>02 新建 / 编辑智能体抽屉</h2>
+                    <p>从列表页进入编辑态，右侧抽屉拆分为基本信息、Schema、默认端点和认证映射四块。</p>
+                </div>
+                <div class="board-badge">对应 POST /console/agents 与 PUT /console/agents/{agentId}</div>
+            </div>
+            <div class="app-shell">
+                <div class="shell-body shell-short">
+                    <aside class="shell-aside">
+                        <div class="brand">
+                            <div class="brand-logo"><span class="logo-dot">AI</span><span>PIG ADMIN</span></div>
+                            <p>智能体管理模块原型</p>
+                        </div>
+                        <div class="menu-scroll">
+                            <div class="menu-group-title">主导航</div>
+                            <div class="menu-item"><span class="menu-icon">□</span><span>首页</span></div>
+                            <div class="menu-item"><span class="menu-icon">□</span><span>系统管理</span></div>
+                            <div class="menu-item sub active"><span class="menu-icon">·</span><span>智能体管理</span></div>
+                        </div>
+                    </aside>
+                    <main class="shell-main">
+                        <div class="topbar">
+                            <div class="topbar-left">
+                                <span class="hamburger">≡</span>
+                                <div class="breadcrumb"><span>首页</span><span>/</span><span>系统管理</span><span>/</span><strong>智能体管理</strong></div>
+                            </div>
+                            <div class="topbar-right">
+                                <span class="icon-button">搜</span>
+                                <span class="icon-button">铃</span>
+                                <span class="user-chip"><span class="avatar">A</span><span>admin</span></span>
+                            </div>
+                        </div>
+                        <div class="tags-bar"><span class="tag-tab">首页</span><span class="tag-tab active">智能体管理</span><span class="tag-tab">分类标签</span></div>
+                        <div class="workspace">
+                            <div class="content-wrap overlay-surface">
+                                <div class="ghost-layout">
+                                    <div class="ghost-box ghost-toolbar"></div>
+                                    <div class="ghost-box ghost-query"></div>
+                                    <div class="ghost-box ghost-table"></div>
+                                </div>
+                                <div class="page-mask"></div>
+                                <aside class="drawer wide">
+                                    <div class="drawer-head">
+                                        <div class="drawer-head-top">
+                                            <div>
+                                                <h3>新建智能体</h3>
+                                                <p>保存后默认进入草稿态，可继续配置端点、认证和发布信息。</p>
+                                            </div>
+                                            <span class="status-tag draft">DRAFT</span>
+                                        </div>
+                                        <div class="small-card-tags"><span class="tag blue">步骤 1 基本信息</span><span class="tag gray">步骤 2 Schema</span><span class="tag gray">步骤 3 端点</span><span class="tag gray">步骤 4 认证</span></div>
+                                    </div>
+                                    <div class="drawer-body">
+                                        <div class="drawer-scroll">
+                                            <section class="drawer-section">
+                                                <div class="drawer-section-head"><strong>基本信息</strong><span>主体字段映射 AgentRegisterDTO</span></div>
+                                                <div class="drawer-section-body">
+                                                    <div class="form-grid">
+                                                        <div class="field"><label>智能体编码</label><div class="input">customer_service_bot</div></div>
+                                                        <div class="field"><label>智能体名称</label><div class="input">客服知识问答助手</div></div>
+                                                        <div class="field"><label>框架类型</label><div class="select">LANGCHAIN</div></div>
+                                                        <div class="field"><label>可见范围</label><div class="select">PRIVATE / DEPT / PUBLIC</div></div>
+                                                        <div class="field"><label>分类</label><div class="select">客服</div></div>
+                                                        <div class="field"><label>标签</label><div class="input">知识库, FAQ, 售后</div></div>
+                                                        <div class="field span-2"><label>描述</label><div class="textarea">负责 FAQ、工单摘要与知识检索，支持客服一线快速生成标准答复与升级建议。</div></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <section class="drawer-section">
+                                                <div class="drawer-section-head"><strong>Schema 约束</strong><span>支持 schemaSpecVersion + input/output schema</span></div>
+                                                <div class="drawer-section-body">
+                                                    <div class="inline-notice">推荐默认使用 `draft-2020-12`，前端允许直接粘贴 JSON，并在保存前完成格式校验。</div>
+                                                    <div class="form-grid">
+                                                        <div class="field"><label>Schema 规范版本</label><div class="select">draft-2020-12</div></div>
+                                                        <div class="field"><label>Framework 配置</label><div class="textarea">{ "chainType": "retrieval_qa" }</div></div>
+                                                        <div class="field"><label>输入 Schema</label><div class="textarea">{ "type": "object", "properties": { "question": { "type": "string" } }, "required": ["question"] }</div></div>
+                                                        <div class="field"><label>输出 Schema</label><div class="textarea">{ "type": "object", "properties": { "answer": { "type": "string" } }, "required": ["answer"] }</div></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <section class="drawer-section">
+                                                <div class="drawer-section-head"><strong>默认端点</strong><span>新增时同步创建默认端点</span></div>
+                                                <div class="drawer-section-body">
+                                                    <div class="form-grid">
+                                                        <div class="field"><label>端点名称</label><div class="input">prod-default</div></div>
+                                                        <div class="field"><label>协议</label><div class="select">HTTP</div></div>
+                                                        <div class="field"><label>是否流式</label><div class="select">否</div></div>
+                                                        <div class="field"><label>超时时间</label><div class="input">60000 ms</div></div>
+                                                        <div class="field span-2"><label>Base URL</label><div class="input">http://agent-service:8080</div></div>
+                                                        <div class="field"><label>调用路径</label><div class="input">/api/v1/chat</div></div>
+                                                        <div class="field"><label>健康检查地址</label><div class="input">http://agent-service:8080/actuator/health</div></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <section class="drawer-section">
+                                                <div class="drawer-section-head"><strong>认证与映射</strong><span>敏感值由服务端加密入库</span></div>
+                                                <div class="drawer-section-body">
+                                                    <div class="form-grid">
+                                                        <div class="field"><label>认证方式</label><div class="select">API_KEY</div></div>
+                                                        <div class="field"><label>传输位置</label><div class="select">HEADER</div></div>
+                                                        <div class="field"><label>参数名</label><div class="input">X-API-Key</div></div>
+                                                        <div class="field"><label>凭据名称</label><div class="input">customer-service-prod-key</div></div>
+                                                        <div class="field span-2"><label>敏感凭据</label><div class="textarea">{ "credentialMode": "INLINE", "secretPayload": { "apiKey": "sk-prod-xxx" } }</div></div>
+                                                        <div class="field"><label>Headers JSON</label><div class="textarea">{ "X-App-Code": "agent-center" }</div></div>
+                                                        <div class="field"><label>Mapping JSON</label><div class="textarea">{ "input.question": "query" }</div></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <div class="drawer-footer"><span class="btn">取消</span><span class="btn">保存草稿</span><span class="btn primary">保存并去发布</span></div>
+                                </aside>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </section>
+
+        <section class="prototype-board">
+            <div class="board-meta">
+                <div>
+                    <h2>03 智能体详情与发布历史</h2>
+                    <p>详情页面面向发布与运维，整合基础信息、端点状态、对象级权限摘要和发布流水。</p>
+                </div>
+                <div class="board-badge">对应 GET /console/agents/{agentId} + GET /console/agents/{agentId}/releases</div>
+            </div>
+            <div class="app-shell">
+                <div class="shell-body">
+                    <aside class="shell-aside">
+                        <div class="brand">
+                            <div class="brand-logo"><span class="logo-dot">AI</span><span>PIG ADMIN</span></div>
+                            <p>智能体管理模块原型</p>
+                        </div>
+                        <div class="menu-scroll">
+                            <div class="menu-group-title">主导航</div>
+                            <div class="menu-item"><span class="menu-icon">□</span><span>首页</span></div>
+                            <div class="menu-item"><span class="menu-icon">□</span><span>系统管理</span></div>
+                            <div class="menu-item sub active"><span class="menu-icon">·</span><span>智能体管理</span></div>
+                            <div class="menu-item sub"><span class="menu-icon">·</span><span>分类标签</span></div>
+                            <div class="menu-item sub"><span class="menu-icon">·</span><span>健康巡检</span></div>
+                        </div>
+                    </aside>
+                    <main class="shell-main">
+                        <div class="topbar">
+                            <div class="topbar-left">
+                                <span class="hamburger">≡</span>
+                                <div class="breadcrumb"><span>首页</span><span>/</span><span>系统管理</span><span>/</span><span>智能体管理</span><span>/</span><strong>客服知识问答助手</strong></div>
+                            </div>
+                            <div class="topbar-right">
+                                <span class="icon-button">铃</span>
+                                <span class="icon-button">配</span>
+                                <span class="user-chip"><span class="avatar">A</span><span>admin</span></span>
+                            </div>
+                        </div>
+                        <div class="tags-bar"><span class="tag-tab">首页</span><span class="tag-tab active">智能体管理</span><span class="tag-tab">分类标签</span><span class="tag-tab">健康巡检</span></div>
+                        <div class="workspace">
+                            <div class="content-wrap">
+                                <div class="hero-card">
+                                    <div>
+                                        <div class="hero-title"><h4>客服知识问答助手</h4><span class="status-tag published">PUBLISHED</span><span class="status-tag dept">部门可见</span><span class="status-tag published">HEALTHY</span></div>
+                                        <div class="hero-meta"><span>AgentId: 30001</span><span>Code: customer_service_bot</span><span>Owner: admin / 销售部</span><span>默认端点: prod-default</span></div>
+                                    </div>
+                                    <div class="button-group"><span class="btn">编辑</span><span class="btn plain">授权管理</span><span class="btn">健康检查</span><span class="btn danger">下线</span></div>
+                                </div>
+                                <div class="detail-grid">
+                                    <div>
+                                        <div class="panel">
+                                            <div class="panel-head"><div><h4>基础信息</h4><p>主体、输入输出结构和分类标签等业务配置。</p></div><span class="tag blue">schemaSpecVersion: draft-2020-12</span></div>
+                                            <div class="panel-body">
+                                                <div class="desc-grid">
+                                                    <div class="desc-item"><label>框架类型</label><strong>LANGCHAIN</strong></div>
+                                                    <div class="desc-item"><label>当前发布版本</label><strong>R2026.03.11</strong></div>
+                                                    <div class="desc-item"><label>分类</label><strong>客服</strong></div>
+                                                    <div class="desc-item"><label>标签</label><strong>知识库 / FAQ / 售后</strong></div>
+                                                    <div class="desc-item"><label>可见范围</label><strong>PRIVATE</strong></div>
+                                                    <div class="desc-item"><label>更新时间</label><strong>2026-03-11 14:21:08</strong></div>
+                                                    <div class="desc-item" style="grid-column: span 2;"><label>描述</label><strong>负责 FAQ、工单摘要与知识检索，服务客服一线和工单分派场景。</strong></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel">
+                                            <div class="panel-head"><div><h4>输入 / 输出 Schema</h4><p>用于控制请求结构和返回结构校验，便于接入外部调用方。</p></div></div>
+                                            <div class="panel-body" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+                                                <div class="code-block">{ "type": "object", "properties": { "question": { "type": "string" } }, "required": ["question"] }</div>
+                                                <div class="code-block">{ "type": "object", "properties": { "answer": { "type": "string" } }, "required": ["answer"] }</div>
+                                            </div>
+                                        </div>
+                                        <div class="panel">
+                                            <div class="panel-head"><div><h4>发布历史</h4><p>展示上线、下线和端点切换的变更记录。</p></div><span class="btn">查看完整流水</span></div>
+                                            <div class="panel-body">
+                                                <div class="table-wrapper">
+                                                    <table>
+                                                        <thead>
+                                                            <tr><th style="width: 130px;">Release No</th><th style="width: 100px;">动作</th><th>发布说明</th><th style="width: 130px;">端点</th><th style="width: 120px;">操作人</th><th style="width: 160px;">时间</th></tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr><td>R2026.03.11</td><td><span class="tag green">PUBLISH</span></td><td>接入最新 FAQ、退款规则和售后流程知识库</td><td>50001</td><td>admin</td><td>2026-03-11 14:20</td></tr>
+                                                            <tr><td>R2026.03.05</td><td><span class="tag orange">OFFLINE</span></td><td>上游检索服务升级，临时下线排查召回结果</td><td>50001</td><td>admin</td><td>2026-03-05 09:12</td></tr>
+                                                            <tr><td>R2026.02.28</td><td><span class="tag green">PUBLISH</span></td><td>首版发布，支持工单摘要和知识问答</td><td>50001</td><td>admin</td><td>2026-02-28 18:40</td></tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="panel">
+                                            <div class="panel-head"><div><h4>默认端点状态</h4><p>发布时只允许绑定启用且健康的端点。</p></div></div>
+                                            <div class="panel-body">
+                                                <div class="acl-summary">
+                                                    <div class="summary-box"><label>端点名称</label><strong>prod-default</strong></div>
+                                                    <div class="summary-box"><label>协议 / 流式</label><strong>HTTP / 否</strong></div>
+                                                    <div class="summary-box"><label>健康状态</label><strong style="color: var(--success);">HEALTHY</strong></div>
+                                                    <div class="summary-box"><label>超时设置</label><strong>60000 ms</strong></div>
+                                                </div>
+                                                <div class="tip-card" style="margin-top: 12px;">Base URL: http://agent-service:8080<br>Invoke Path: /api/v1/chat<br>Auth Type: API_KEY / HEADER / X-API-Key</div>
+                                            </div>
+                                        </div>
+                                        <div class="panel">
+                                            <div class="panel-head"><div><h4>对象级权限摘要</h4><p>ACL 合并后决定当前用户是否具备查看、编辑、发布、授权能力。</p></div></div>
+                                            <div class="panel-body">
+                                                <div class="permission-pills" style="margin-bottom: 12px;"><span class="permission-pill blue">VIEW</span><span class="permission-pill green">EDIT</span><span class="permission-pill orange">PUBLISH</span><span class="permission-pill blue">INVOKE</span><span class="permission-pill red">GRANT</span></div>
+                                                <div class="table-note">当前 owner 为 admin，销售部拥有默认管理权；研发部通过 ACL 获得查看、编辑和发布能力。</div>
+                                            </div>
+                                        </div>
+                                        <div class="panel">
+                                            <div class="panel-head"><div><h4>最近操作</h4><p>帮助快速定位发布、下线和端点异常处理记录。</p></div></div>
+                                            <div class="panel-body">
+                                                <div class="timeline">
+                                                    <div class="timeline-item"><span class="timeline-dot"></span><div><strong>2026-03-11 14:20 发布成功</strong><p>admin 将版本 R2026.03.11 绑定至 prod-default，备注“接入最新 FAQ”。</p></div></div>
+                                                    <div class="timeline-item"><span class="timeline-dot"></span><div><strong>2026-03-10 17:42 更新 Endpoint Mapping</strong><p>调整 `input.question -> query` 映射，并增加 `X-App-Code` 头。</p></div></div>
+                                                    <div class="timeline-item"><span class="timeline-dot"></span><div><strong>2026-03-09 09:31 新增研发部 ACL</strong><p>赋予研发部 `VIEW + EDIT + PUBLISH + INVOKE` 权限，用于联调和验收。</p></div></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </section>
+
+        <section class="prototype-board">
+            <div class="board-meta">
+                <div>
+                    <h2>04 ACL 授权抽屉</h2>
+                    <p>围绕 `permissionMask` 做授权增删改，支持 USER / ROLE / DEPT 三类主体。</p>
+                </div>
+                <div class="board-badge">对应 GET / POST / DELETE /console/agents/{agentId}/acl</div>
+            </div>
+            <div class="app-shell">
+                <div class="shell-body shell-short">
+                    <aside class="shell-aside">
+                        <div class="brand"><div class="brand-logo"><span class="logo-dot">AI</span><span>PIG ADMIN</span></div><p>智能体管理模块原型</p></div>
+                        <div class="menu-scroll">
+                            <div class="menu-group-title">主导航</div>
+                            <div class="menu-item"><span class="menu-icon">□</span><span>首页</span></div>
+                            <div class="menu-item"><span class="menu-icon">□</span><span>系统管理</span></div>
+                            <div class="menu-item sub active"><span class="menu-icon">·</span><span>智能体管理</span></div>
+                        </div>
+                    </aside>
+                    <main class="shell-main">
+                        <div class="topbar">
+                            <div class="topbar-left"><span class="hamburger">≡</span><div class="breadcrumb"><span>首页</span><span>/</span><span>系统管理</span><span>/</span><span>智能体管理</span><span>/</span><strong>授权管理</strong></div></div>
+                            <div class="topbar-right"><span class="icon-button">铃</span><span class="user-chip"><span class="avatar">A</span><span>admin</span></span></div>
+                        </div>
+                        <div class="tags-bar"><span class="tag-tab active">智能体管理</span><span class="tag-tab">分类标签</span></div>
+                        <div class="workspace">
+                            <div class="content-wrap overlay-surface">
+                                <div class="ghost-layout"><div class="ghost-box ghost-toolbar"></div><div class="ghost-box ghost-query"></div><div class="ghost-box ghost-table"></div></div>
+                                <div class="page-mask"></div>
+                                <aside class="drawer">
+                                    <div class="drawer-head">
+                                        <div class="drawer-head-top">
+                                            <div><h3>授权管理</h3><p>客服知识问答助手 · AgentId 30001 · owner: admin</p></div>
+                                            <span class="status-tag published">已发布</span>
+                                        </div>
+                                        <div class="small-card-tags"><span class="tag blue">查看 ACL</span><span class="tag orange">新增或覆盖授权</span><span class="tag red">回收授权</span></div>
+                                    </div>
+                                    <div class="drawer-body">
+                                        <div class="drawer-scroll">
+                                            <section class="drawer-section">
+                                                <div class="drawer-section-head"><strong>新增 / 覆盖授权</strong><span>permissionMask 推荐以位运算映射展示</span></div>
+                                                <div class="drawer-section-body">
+                                                    <div class="form-grid">
+                                                        <div class="field"><label>主体类型</label><div class="select">DEPT / ROLE / USER</div></div>
+                                                        <div class="field"><label>主体对象</label><div class="input">研发部（DeptId = 7）</div></div>
+                                                        <div class="field"><label>到期时间</label><div class="input">2026-12-31 23:59:59</div></div>
+                                                        <div class="field"><label>授权来源</label><div class="select">MANUAL</div></div>
+                                                        <div class="field span-2"><label>权限掩码</label><div class="filter-chips"><span class="filter-chip selected">VIEW</span><span class="filter-chip selected">EDIT</span><span class="filter-chip selected">PUBLISH</span><span class="filter-chip">GRANT</span><span class="filter-chip selected">INVOKE</span></div></div>
+                                                        <div class="field span-2"><label>备注</label><div class="textarea">研发部可查看、编辑、发布、调用，用于联调和内部灰度验收。</div></div>
+                                                    </div>
+                                                    <div class="button-group" style="margin-top: 12px;"><span class="btn primary">新增 / 覆盖授权</span><span class="btn">清空</span></div>
+                                                </div>
+                                            </section>
+                                            <section class="drawer-section">
+                                                <div class="drawer-section-head"><strong>现有 ACL</strong><span>支持删除某一主体的授权记录</span></div>
+                                                <div class="drawer-section-body">
+                                                    <div class="table-wrapper">
+                                                        <table>
+                                                            <thead><tr><th style="width: 78px;">主体类型</th><th style="width: 126px;">主体</th><th>权限</th><th style="width: 118px;">到期时间</th><th style="width: 70px;">操作</th></tr></thead>
+                                                            <tbody>
+                                                                <tr><td>DEPT</td><td>研发部</td><td><div class="permission-pills"><span class="permission-pill blue">VIEW</span><span class="permission-pill green">EDIT</span><span class="permission-pill orange">PUBLISH</span><span class="permission-pill blue">INVOKE</span></div></td><td>2026-12-31</td><td><span class="action-link danger">回收</span></td></tr>
+                                                                <tr><td>ROLE</td><td>AI运营经理</td><td><div class="permission-pills"><span class="permission-pill blue">VIEW</span><span class="permission-pill green">EDIT</span><span class="permission-pill orange">PUBLISH</span><span class="permission-pill red">GRANT</span></div></td><td>长期</td><td><span class="action-link danger">回收</span></td></tr>
+                                                                <tr><td>USER</td><td>王雪</td><td><div class="permission-pills"><span class="permission-pill blue">VIEW</span></div></td><td>2026-06-30</td><td><span class="action-link danger">回收</span></td></tr>
+                                                                <tr><td>ROLE</td><td>客服平台主管</td><td><div class="permission-pills"><span class="permission-pill blue">VIEW</span><span class="permission-pill blue">INVOKE</span></div></td><td>长期</td><td><span class="action-link danger">回收</span></td></tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <section class="drawer-section">
+                                                <div class="drawer-section-head"><strong>权限说明</strong><span>位掩码示意</span></div>
+                                                <div class="drawer-section-body"><div class="tip-card">39 = VIEW(1) + EDIT(2) + PUBLISH(4) + INVOKE(32)<br>47 = VIEW(1) + EDIT(2) + PUBLISH(4) + GRANT(8) + INVOKE(32)<br>页面展示建议以勾选态与彩色标签双重表达，避免用户直接感知位运算细节。</div></div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <div class="drawer-footer"><span class="btn">关闭</span></div>
+                                </aside>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </section>
+
+        <section class="prototype-board">
+            <div class="board-meta">
+                <div>
+                    <h2>05 分类 / 标签管理</h2>
+                    <p>把分类树和标签页放在同一工作台中，便于维护新增智能体时的基础资产。</p>
+                </div>
+                <div class="board-badge">对应 /console/agent-categories/* 与 /console/agent-tags/*</div>
+            </div>
+            <div class="app-shell">
+                <div class="shell-body">
+                    <aside class="shell-aside">
+                        <div class="brand"><div class="brand-logo"><span class="logo-dot">AI</span><span>PIG ADMIN</span></div><p>智能体管理模块原型</p></div>
+                        <div class="menu-scroll">
+                            <div class="menu-group-title">主导航</div>
+                            <div class="menu-item"><span class="menu-icon">□</span><span>首页</span></div>
+                            <div class="menu-item"><span class="menu-icon">□</span><span>系统管理</span></div>
+                            <div class="menu-item sub"><span class="menu-icon">·</span><span>智能体管理</span></div>
+                            <div class="menu-item sub active"><span class="menu-icon">·</span><span>分类标签</span></div>
+                            <div class="menu-item sub"><span class="menu-icon">·</span><span>健康巡检</span></div>
+                        </div>
+                    </aside>
+                    <main class="shell-main">
+                        <div class="topbar">
+                            <div class="topbar-left"><span class="hamburger">≡</span><div class="breadcrumb"><span>首页</span><span>/</span><span>系统管理</span><span>/</span><strong>分类标签</strong></div></div>
+                            <div class="topbar-right"><span class="icon-button">搜</span><span class="icon-button">配</span><span class="user-chip"><span class="avatar">A</span><span>admin</span></span></div>
+                        </div>
+                        <div class="tags-bar"><span class="tag-tab">智能体管理</span><span class="tag-tab active">分类标签</span></div>
+                        <div class="workspace">
+                            <div class="content-wrap">
+                                <div class="page-head">
+                                    <div><h3>分类 / 标签管理</h3><p>用于维护智能体元数据资产，支撑列表筛选、表单选择和权限治理。</p></div>
+                                    <div class="button-group"><span class="btn primary">新增分类</span><span class="btn">新增标签</span><span class="btn">同步使用次数</span></div>
+                                </div>
+                                <div class="tip-card" style="margin-bottom: 14px;">分类建议使用树结构管理业务域，标签建议使用扁平管理并支持颜色标识。两者都应在新建 / 编辑智能体表单中复用。</div>
+                                <div class="split-layout">
+                                    <div class="tree-panel">
+                                        <div class="panel-head"><div><h4>分类树</h4><p>支持树形新增、编辑和删除。</p></div><span class="btn">展开全部</span></div>
+                                        <div class="tree-list">
+                                            <div class="tree-node"><div><strong>客服</strong><p>categoryCode: customer-service</p></div><span class="count-badge">18</span></div>
+                                            <div class="tree-node level-2"><div><strong>售前咨询</strong><p>客服 FAQ 与线索回复</p></div><span class="count-badge">7</span></div>
+                                            <div class="tree-node level-2"><div><strong>售后工单</strong><p>退款、换货、升级处理</p></div><span class="count-badge">11</span></div>
+                                            <div class="tree-node"><div><strong>研发效能</strong><p>categoryCode: engineering-efficiency</p></div><span class="count-badge">23</span></div>
+                                            <div class="tree-node level-2"><div><strong>代码分析</strong><p>代码审查、静态检查、生成说明</p></div><span class="count-badge">15</span></div>
+                                            <div class="tree-node level-2"><div><strong>运维助手</strong><p>日志诊断、故障摘要、巡检</p></div><span class="count-badge">8</span></div>
+                                            <div class="tree-node"><div><strong>运营增长</strong><p>categoryCode: growth</p></div><span class="count-badge">12</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="list-panel">
+                                        <div class="panel-head"><div><h4>标签列表</h4><p>标签用于细粒度描述能力、场景与技术路线。</p></div><div class="button-group"><span class="btn">按使用次数排序</span><span class="btn">批量停用</span></div></div>
+                                        <div class="panel-body">
+                                            <div class="query-grid compact" style="margin-bottom: 14px;">
+                                                <div class="field"><label>标签名称</label><div class="input">请输入标签名称或编码</div></div>
+                                                <div class="field"><label>状态</label><div class="select">全部 / ACTIVE / INACTIVE</div></div>
+                                                <div class="field"><label>颜色</label><div class="select">全部 / 蓝 / 绿 / 橙 / 红</div></div>
+                                                <div class="field"><label>操作</label><div class="button-group"><span class="btn primary">查询</span><span class="btn">重置</span></div></div>
+                                            </div>
+                                            <div class="table-wrapper">
+                                                <table>
+                                                    <thead><tr><th style="width: 160px;">标签</th><th style="width: 120px;">编码</th><th style="width: 90px;">颜色</th><th style="width: 90px;">状态</th><th style="width: 100px;">关联数</th><th style="width: 150px;">最近更新</th><th>操作</th></tr></thead>
+                                                    <tbody>
+                                                        <tr><td><span class="color-dot" style="background: #2563eb;"></span>RAG</td><td>rag</td><td>#2563eb</td><td><span class="tag green">ACTIVE</span></td><td>32</td><td>2026-03-10 16:40</td><td><div class="actions-inline"><span class="action-link">编辑</span><span class="action-link danger">删除</span></div></td></tr>
+                                                        <tr><td><span class="color-dot" style="background: #16a34a;"></span>工作流</td><td>workflow</td><td>#16a34a</td><td><span class="tag green">ACTIVE</span></td><td>21</td><td>2026-03-09 11:05</td><td><div class="actions-inline"><span class="action-link">编辑</span><span class="action-link danger">删除</span></div></td></tr>
+                                                        <tr><td><span class="color-dot" style="background: #ea580c;"></span>FAQ</td><td>faq</td><td>#ea580c</td><td><span class="tag green">ACTIVE</span></td><td>18</td><td>2026-03-08 14:20</td><td><div class="actions-inline"><span class="action-link">编辑</span><span class="action-link danger">删除</span></div></td></tr>
+                                                        <tr><td><span class="color-dot" style="background: #dc2626;"></span>灰度</td><td>gray-release</td><td>#dc2626</td><td><span class="tag gray">INACTIVE</span></td><td>4</td><td>2026-03-01 19:44</td><td><div class="actions-inline"><span class="action-link">启用</span><span class="action-link danger">删除</span></div></td></tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="footer-note">页面说明：分类和标签都应被智能体列表查询条件、详情页和编辑抽屉复用，避免形成独立孤岛配置。</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</body>
+</html>
