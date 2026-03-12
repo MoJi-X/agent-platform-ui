@@ -171,7 +171,7 @@
 			<pagination v-bind="state.pagination" @current-change="currentChangeHandle" @size-change="sizeChangeHandle" />
 		</div>
 
-		<agent-form ref="formRef" />
+		<agent-form ref="formRef" @refresh="handleFormRefresh" />
 		<acl-drawer ref="aclDrawerRef" />
 	</div>
 </template>
@@ -297,6 +297,10 @@ const resetQuery = () => {
 	queryRef.value?.resetFields();
 	Object.assign(queryForm, createDefaultQueryForm());
 	getDataList();
+};
+
+const handleFormRefresh = () => {
+	getDataList(false);
 };
 
 const goMetaPage = (tab: 'category' | 'tag') => {
