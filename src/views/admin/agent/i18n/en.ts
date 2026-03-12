@@ -2,6 +2,7 @@ export default {
 	agent: {
 		title: 'Agent Management',
 		detailTitle: 'Agent Detail',
+		subtitle: 'Manage agent identity, default endpoints, visibility, release status, and object-level permissions in one place.',
 		action: {
 			create: 'Create Agent',
 			edit: 'Edit Agent',
@@ -14,6 +15,7 @@ export default {
 			viewDetail: 'View Detail',
 		},
 		table: {
+			agentId: 'Agent ID',
 			agentCode: 'Agent Code',
 			agentName: 'Agent Name',
 			frameworkType: 'Framework',
@@ -26,8 +28,11 @@ export default {
 			updatedAt: 'Updated At',
 			ownerDeptId: 'Owner Department',
 			myPermMask: 'My Permissions',
+			currentRelease: 'Current Release',
 		},
 		field: {
+			agentId: 'Agent ID',
+			keyword: 'Keyword',
 			agentCode: 'Agent Code',
 			agentName: 'Agent Name',
 			description: 'Description',
@@ -38,6 +43,8 @@ export default {
 			outputSchema: 'Output Schema',
 			metadataJson: 'Metadata JSON',
 			visibilityScope: 'Visibility',
+			onlyMine: 'Only mine',
+			onlyAuthorized: 'Only authorized',
 			categoryId: 'Category',
 			tagIds: 'Tags',
 			defaultEndpointId: 'Default Endpoint',
@@ -61,6 +68,18 @@ export default {
 			expiresAt: 'Expires At',
 			remarks: 'Remarks',
 			releaseNote: 'Release Note',
+		},
+		placeholder: {
+			keyword: 'Enter name, code or AgentId',
+			status: 'Select status',
+			frameworkType: 'Select framework',
+			categoryId: 'Select category',
+			tagId: 'Select tag',
+		},
+		empty: {
+			noCategory: 'Uncategorized',
+			noTags: 'No tags',
+			noRelease: 'No release history',
 		},
 		enums: {
 			status: {
@@ -150,6 +169,12 @@ export default {
 			healthCheckSuccess: 'Health check started',
 			grantSuccess: 'Granted successfully',
 			revokeSuccess: 'Revoked successfully',
+			summaryTodo: 'Summary cards are pending a backend summary API. This version uses the real list data only.',
+			formTodo: 'The create and edit drawer will be completed in the next step. This step keeps the list entry and context only.',
+			aclTodo: 'The ACL drawer will be completed in the next step. This step keeps the list entry and context only.',
+			detailTodo: 'The detail page will be completed in the next step. This step keeps the route entry and context only.',
+			loadCategoryFailed: 'Failed to load categories',
+			loadTagFailed: 'Failed to load tags',
 		},
 	},
 };

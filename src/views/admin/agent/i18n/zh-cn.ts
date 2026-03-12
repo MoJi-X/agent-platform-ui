@@ -2,6 +2,7 @@ export default {
 	agent: {
 		title: '智能体管理',
 		detailTitle: '智能体详情',
+		subtitle: '统一管理智能体主体、默认端点、可见范围、发布状态和对象级权限',
 		action: {
 			create: '新建智能体',
 			edit: '编辑智能体',
@@ -14,6 +15,7 @@ export default {
 			viewDetail: '查看详情',
 		},
 		table: {
+			agentId: '智能体 ID',
 			agentCode: '智能体编码',
 			agentName: '智能体名称',
 			frameworkType: '框架类型',
@@ -26,8 +28,11 @@ export default {
 			updatedAt: '更新时间',
 			ownerDeptId: '归属部门',
 			myPermMask: '我的权限',
+			currentRelease: '当前发布',
 		},
 		field: {
+			agentId: '智能体 ID',
+			keyword: '关键字',
 			agentCode: '智能体编码',
 			agentName: '智能体名称',
 			description: '描述',
@@ -38,6 +43,8 @@ export default {
 			outputSchema: '输出 Schema',
 			metadataJson: '扩展元数据',
 			visibilityScope: '可见范围',
+			onlyMine: '仅看我创建',
+			onlyAuthorized: '仅看我有权限的',
 			categoryId: '分类',
 			tagIds: '标签',
 			defaultEndpointId: '默认端点',
@@ -61,6 +68,18 @@ export default {
 			expiresAt: '失效时间',
 			remarks: '备注',
 			releaseNote: '发布说明',
+		},
+		placeholder: {
+			keyword: '请输入名称、编码或 AgentId',
+			status: '请选择状态',
+			frameworkType: '请选择框架类型',
+			categoryId: '请选择分类',
+			tagId: '请选择标签',
+		},
+		empty: {
+			noCategory: '未分类',
+			noTags: '无标签',
+			noRelease: '暂无发布记录',
 		},
 		enums: {
 			status: {
@@ -150,6 +169,12 @@ export default {
 			healthCheckSuccess: '健康检查已触发',
 			grantSuccess: '授权成功',
 			revokeSuccess: '回收成功',
+			summaryTodo: '统计卡片待后端汇总接口补齐，当前版本先提供真实列表数据。',
+			formTodo: '新建 / 编辑抽屉将在下一阶段补齐，本阶段先保留列表入口和上下文。',
+			aclTodo: 'ACL 授权抽屉将在下一阶段补齐，本阶段先保留列表入口和上下文。',
+			detailTodo: '详情页将在下一阶段补齐，本阶段先保留路由入口和上下文。',
+			loadCategoryFailed: '分类加载失败',
+			loadTagFailed: '标签加载失败',
 		},
 	},
 };

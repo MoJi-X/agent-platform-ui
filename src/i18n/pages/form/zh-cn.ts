@@ -18,10 +18,12 @@ export default {
 		editSuccessText: '修改成功',
 		addSuccessText: '添加成功',
 		delSuccessText: '删除成功',
+		delErrorText: '删除失败',
 		delConfirmText: '此操作将永久删除',
 		optConfirmText: '是否确认本操作',
 		confirmButtonText: '确认',
 		cancelButtonText: '取消',
+		backBtn: '返回',
 		download: '下载',
 	},
 	message: {

@@ -20,9 +20,11 @@ export default {
 		editSuccessText: 'Successfully edited',
 		addSuccessText: 'Successfully added',
 		delSuccessText: 'Successfully deleted',
+		delErrorText: 'Delete failed',
 		delConfirmText: 'This operation will permanently delete',
 		confirmButtonText: 'Confirm',
 		cancelButtonText: 'Cancel',
+		backBtn: 'Back',
 		download: 'Download',
 	},
 	message: {

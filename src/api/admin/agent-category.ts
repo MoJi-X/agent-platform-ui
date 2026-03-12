@@ -1,16 +1,18 @@
 import request from '/@/utils/request';
 import type { AgentApiResponse, AgentCategory, AgentCategoryPayload } from '/@/types/agent';
 
+const AGENT_CATEGORY_PREFIX = '/agent-console/console/agent-categories';
+
 export const getAgentCategoryTree = () => {
 	return request({
-		url: '/console/agent-categories/tree',
+		url: `${AGENT_CATEGORY_PREFIX}/tree`,
 		method: 'get',
 	}) as Promise<AgentApiResponse<AgentCategory[]>>;
 };
 
 export const createAgentCategory = (data: AgentCategoryPayload) => {
 	return request({
-		url: '/console/agent-categories',
+		url: AGENT_CATEGORY_PREFIX,
 		method: 'post',
 		data,
 	}) as Promise<AgentApiResponse<string>>;
@@ -18,7 +20,7 @@ export const createAgentCategory = (data: AgentCategoryPayload) => {
 
 export const updateAgentCategory = (categoryId: string, data: AgentCategoryPayload) => {
 	return request({
-		url: `/console/agent-categories/${categoryId}`,
+		url: `${AGENT_CATEGORY_PREFIX}/${categoryId}`,
 		method: 'put',
 		data,
 	}) as Promise<AgentApiResponse<boolean>>;
@@ -26,7 +28,7 @@ export const updateAgentCategory = (categoryId: string, data: AgentCategoryPaylo
 
 export const deleteAgentCategory = (categoryId: string) => {
 	return request({
-		url: `/console/agent-categories/${categoryId}`,
+		url: `${AGENT_CATEGORY_PREFIX}/${categoryId}`,
 		method: 'delete',
 	}) as Promise<AgentApiResponse<boolean>>;
 };
